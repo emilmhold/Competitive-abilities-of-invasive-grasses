@@ -1,6 +1,6 @@
 ## Biomass and competition models, figures, and tables
 ## Authors: Cole Vandemark, Viktoria Wagner, and Emily Holden
-## Last edited by Emily: April 6, 2025
+## Last edited by Emily: May 12, 2025
 
 #install.packages("tidyverse")
 #install.packages("readxl")
@@ -93,24 +93,20 @@ biomass.summary <- controls %>%
 ab.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Above,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean.Above-se.Above,ymax=mean.Above+se.Above),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=0.5,label="ns",cex=3)+ 
-  annotate("text",x=2,y=0.5,label="ns",cex=3)+
-  annotate("text",x=3,y=0.5,label="ns",cex=3)+
-  annotate("text",x=2.93,y=2,label="species: p=0.608",cex=3)+ 
-  annotate("text",x=2.85,y=1.95,label="origin: p=0.562",cex=3)+
-  annotate("text",x=2.55,y=1.9,label="species:origin: p=0.057",cex=3)+
-  scale_x_discrete(name = "Species",  
+  annotate("text",x=1,y=0.5,label="ns",cex=5)+ 
+  annotate("text",x=2,y=0.5,label="ns",cex=5)+
+  annotate("text",x=3,y=0.5,label="ns",cex=5)+
+  #annotate("text",x=2.8,y=2,label="species: p=0.608",cex=5)+ 
+  #annotate("text",x=2.9,y=1.9,label="origin: p=0.562",cex=5)+
+  #annotate("text",x=2.5,y=1.8,label="species:origin: p=0.057",cex=5)+
+  scale_x_discrete(name = " ",  
                    labels = c(expression(italic("A. cristatum")), 
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Aboveground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab("Mean biomass (g)")
@@ -139,24 +135,20 @@ hist(resid)
 bg.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Below,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean.Below-se.Below,ymax=mean.Below+se.Below),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=0.5,label="ns",cex=3)+ 
-  annotate("text",x=2,y=0.6,label="ns",cex=3)+
-  annotate("text",x=3,y=1.3,label="**",cex=3)+
-  annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
-  annotate("text",x=2.85,y=1.95,label="origin: p=0.046",cex=3)+
-  annotate("text",x=2.55,y=1.9,label="species:origin: p=0.001",cex=3)+
-  scale_x_discrete(name = "Species",  
+  annotate("text",x=1,y=0.5,label="ns",cex=5)+ 
+  annotate("text",x=2,y=0.6,label="ns",cex=5)+
+  annotate("text",x=3,y=1.3,label="**",cex=5)+
+  #annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
+  #annotate("text",x=2.85,y=1.95,label="origin: p=0.046",cex=3)+
+  #annotate("text",x=2.55,y=1.9,label="species:origin: p=0.001",cex=3)+
+  scale_x_discrete(name = " ",  
                    labels = c(expression(italic("A. cristatum")), 
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Belowground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab(" ")
@@ -185,24 +177,22 @@ hist(resid)
 tot.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Total,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean.Total-se.Total,ymax=mean.Total+se.Total),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=0.7,label="ns",cex=3)+ 
-  annotate("text",x=2,y=1,label="ns",cex=3)+
-  annotate("text",x=3,y=1.7,label="*",cex=3)+
-  annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
-  annotate("text",x=2.85,y=1.95,label="origin: p=0.194",cex=3)+
-  annotate("text",x=2.55,y=1.9,label="species:origin: p=0.004",cex=3)+
-  scale_x_discrete(name = "Species",  
+  annotate("text",x=1,y=0.7,label="ns",cex=5)+ 
+  annotate("text",x=2,y=1,label="ns",cex=5)+
+  annotate("text",x=3,y=1.7,label="*",cex=5)+
+  #annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
+  #annotate("text",x=2.85,y=1.95,label="origin: p=0.194",cex=3)+
+  #annotate("text",x=2.55,y=1.9,label="species:origin: p=0.004",cex=3)+
+  scale_x_discrete(name = " ",  
                    labels = c(expression(italic("A. cristatum")), 
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Total biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab(" ")
@@ -217,12 +207,20 @@ biomass.plots <- cowplot::plot_grid(ab.biomass.plot + theme(legend.position = "n
                                     nrow = 1, align = "hv")
 final.biomass.plot <- cowplot::plot_grid(biomass.plots, legend, nrow = 1, rel_widths = c(1, 0.2))
 final.biomass.plot
+final.biomass.plot.with.label <- plot_grid(
+  final.biomass.plot,
+  ggdraw() + draw_label("Species"),
+  ncol = 1,
+  rel_heights = c(1, 0.05)
+)
+final.biomass.plot.with.label
+
 ##export
 ggsave(filename = "Cole's biomass plots.png", 
-       final.biomass.plot,
+       final.biomass.plot.with.label,
        path = "figures/",
-       width = 11,
-       height = 6,
+       width = 12,
+       height = 6.5,
        units = "in"
 )
 
@@ -255,23 +253,21 @@ T.above.summary <- dataset %>%
 aboveground.tolerance.plot <- ggplot(data=T.above.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1.2,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1.2,label="ns",cex=3)+
-  annotate("text",x=3,y=-1.2,label="ns",cex=3)+
-  annotate("text",x=2.93,y=1,label="species: p=0.801",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.798",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species:origin: p=0.137",cex=3)+
-  scale_x_discrete(name = "Species",  labels = c(expression(italic("A. cristatum")), 
-                                                 expression(italic("B. inermis")), 
-                                                 expression(italic("P. pratensis"))))+
+  annotate("text",x=1,y=-1.2,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1.2,label="ns",cex=5)+
+  annotate("text",x=3,y=-1.2,label="ns",cex=5)+
+  #annotate("text",x=2.93,y=1,label="species: p=0.801",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.798",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species:origin: p=0.137",cex=3)+
+  scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
+                                           expression(italic("B. inermis")), 
+                                           expression(italic("P. pratensis"))))+
   ggtitle("Aboveground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                    size = 0.5, linetype = "solid"),
-    panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-    panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-    axis.line = element_line(size = 0.5, linetype = "solid",
-                             colour = "black"),
-    plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey(name = "Origin")+
   ylim(-2.1,1)+
   ylab("Mean tolerance")
@@ -306,23 +302,21 @@ T.below.summary <- dataset %>%
 belowground.tolerance.plot <- ggplot(data=T.below.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1,label="ns",cex=3)+
-  annotate("text",x=3,y=-2,label="**",cex=3)+
-  annotate("text",x=2.93,y=1,label="species: p=0.060",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.045",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species:origin: p=0.004",cex=3)+
-  scale_x_discrete(name = "Species", labels = c(expression(italic("A. cristatum")), 
-                                                          expression(italic("B. inermis")), 
-                                                          expression(italic("P. pratensis"))))+
+  annotate("text",x=1,y=-1,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1,label="ns",cex=5)+
+  annotate("text",x=3,y=-2,label="**",cex=5)+
+  #annotate("text",x=2.93,y=1,label="species: p=0.060",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.045",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species:origin: p=0.004",cex=3)+
+  scale_x_discrete(name = " ", labels = c(expression(italic("A. cristatum")), 
+                                          expression(italic("B. inermis")), 
+                                          expression(italic("P. pratensis"))))+
   ggtitle("Belowground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey(name = "Origin")+
   ylim(-2.1, 1) +
   ylab(" ")
@@ -357,23 +351,21 @@ T.total.summary <- dataset %>%
 total.tolerance.plot <- ggplot(data=T.total.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1,label="ns",cex=3)+
-  annotate("text",x=3,y=-1.75,label="*",cex=3)+
-  annotate("text",x=2.93,y=1,label="species: p=0.215",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.148",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species:origin: p=0.014",cex=3)+
-  scale_x_discrete(name = "Species",  labels = c(expression(italic("A. cristatum")), 
-                                                 expression(italic("B. inermis")), 
-                                                 expression(italic("P. pratensis"))))+
+  annotate("text",x=1,y=-1,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1,label="ns",cex=5)+
+  annotate("text",x=3,y=-1.75,label="*",cex=5)+
+  #annotate("text",x=2.93,y=1,label="species: p=0.215",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.148",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species:origin: p=0.014",cex=3)+
+  scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
+                                           expression(italic("B. inermis")), 
+                                           expression(italic("P. pratensis"))))+
   ggtitle("Total biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -411,23 +403,21 @@ S.above.summary <- dataset %>%
 suppression.above.plot <- ggplot(data=S.above.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1.2,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1.2,label="ns",cex=3)+
-  annotate("text",x=3,y=-1.2,label="ns",cex=3)+
-  annotate("text",x=2.93,y=1,label="species: p=0.526",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.662",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species*origin: p=0.010",cex=3)+
-  scale_x_discrete(name = "Species",  labels = c(expression(italic("A. cristatum")), 
-                                                 expression(italic("B. inermis")), 
-                                                 expression(italic("P. pratensis")))) +
+  annotate("text",x=1,y=-1.2,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1.2,label="ns",cex=5)+
+  annotate("text",x=3,y=-1.2,label="ns",cex=5)+
+  #annotate("text",x=2.93,y=1,label="species: p=0.526",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.662",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species*origin: p=0.010",cex=3)+
+  scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
+                                           expression(italic("B. inermis")), 
+                                           expression(italic("P. pratensis")))) +
   ggtitle("Aboveground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab("Mean suppression")
@@ -461,23 +451,21 @@ S.below.summary <- dataset %>%
 suppression.below.plot <- ggplot(data=S.below.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1,label="ns",cex=3)+
-  annotate("text",x=3,y=-2,label="***",cex=3)+
-  annotate("text",x=2.9,y=1,label="species: p=0.005",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.005",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
-  scale_x_discrete(name = "Species",  labels = c(expression(italic("A. cristatum")), 
-                                                 expression(italic("B. inermis")), 
-                                                 expression(italic("P. pratensis")))) +
+  annotate("text",x=1,y=-1,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1,label="ns",cex=5)+
+  annotate("text",x=3,y=-2,label="***",cex=5)+
+  #annotate("text",x=2.9,y=1,label="species: p=0.005",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.005",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
+  scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
+                                           expression(italic("B. inermis")), 
+                                           expression(italic("P. pratensis")))) +
   ggtitle("Belowground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -511,23 +499,21 @@ S.total.summary <- dataset %>%
 suppression.total.plot <- ggplot(data=S.total.summary,aes(x=Species,y=mean,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=-1,label="ns",cex=3)+ 
-  annotate("text",x=2,y=-1,label="ns",cex=3)+
-  annotate("text",x=3,y=-1.7,label="**",cex=3)+
-  annotate("text",x=2.93,y=1,label="species: p=0.031",cex=3)+ 
-  annotate("text",x=2.85,y=0.9,label="origin: p=0.027",cex=3)+
-  annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
-  scale_x_discrete(name = "Species",  labels = c(expression(italic("A. cristatum")), 
-                                                 expression(italic("B. inermis")), 
-                                                 expression(italic("P. pratensis")))) +
+  annotate("text",x=1,y=-1,label="ns",cex=5)+ 
+  annotate("text",x=2,y=-1,label="ns",cex=5)+
+  annotate("text",x=3,y=-1.7,label="**",cex=5)+
+  #annotate("text",x=2.93,y=1,label="species: p=0.031",cex=3)+ 
+  #annotate("text",x=2.85,y=0.9,label="origin: p=0.027",cex=3)+
+  #annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
+  scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
+                                           expression(italic("B. inermis")), 
+                                           expression(italic("P. pratensis")))) +
   ggtitle("Total biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 12) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -535,13 +521,13 @@ suppression.total.plot
 
 #### put competition plots together ####
 competition.plots <- cowplot::plot_grid(aboveground.tolerance.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
-                                    belowground.tolerance.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
-                                    total.tolerance.plot + theme(legend.position = "none")  + theme(axis.title.x = element_blank()),
-                                    suppression.above.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
-                                    suppression.below.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
-                                    suppression.total.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()),
-                                    labels = "auto",
-                                    nrow = 2, align = "hv")
+                                        belowground.tolerance.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
+                                        total.tolerance.plot + theme(legend.position = "none")  + theme(axis.title.x = element_blank()),
+                                        suppression.above.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
+                                        suppression.below.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()), 
+                                        suppression.total.plot + theme(legend.position = "none") + theme(axis.title.x = element_blank()),
+                                        labels = "auto",
+                                        nrow = 2, align = "hv")
 final.competition.plot <- cowplot::plot_grid(competition.plots, legend, nrow = 1, rel_widths = c(1, 0.2))
 final.competition.plot.with.label <- plot_grid(
   final.competition.plot,
@@ -555,7 +541,7 @@ final.competition.plot.with.label
 ggsave(filename = "Cole's competition plots.png", 
        final.competition.plot.with.label,
        path = "figures/",
-       width = 11,
+       width = 12.5,
        height = 12,
        units = "in"
 )
