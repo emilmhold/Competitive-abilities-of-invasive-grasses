@@ -1,7 +1,7 @@
 ## Compare biomass for plants grown alone and with neighbours
 ## Author: Emily H
 ## Created: April 21, 2025
-## Last edited: April 21, 2025
+## Last edited: May 26, 2025
 
 #install.packages("tidyverse")
 
@@ -90,13 +90,8 @@ aboveground.biomass.comparison <- ggplot(data=growth.comparison.df, aes(x=Specie
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Aboveground biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   scale_fill_grey(name = "Neighbour status")+
   ylim(0,1.5)+
   ylab("Mean biomass (g)")
@@ -110,16 +105,11 @@ belowground.biomass.comparison <- ggplot(data=growth.comparison.df, aes(x=Specie
                    labels = c(expression(italic("A. cristatum")), 
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
-  ggtitle("Total biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  ggtitle("Belowground biomass")+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   scale_fill_grey(name = "Neighbour status")+
-  ylim(0,1.5)+
+  ylim(0,1.5) + 
   ylab(" ")
 belowground.biomass.comparison
 
@@ -132,13 +122,8 @@ total.biomass.comparison <- ggplot(data=growth.comparison.df, aes(x=Species,y=me
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Total biomass")+
-  theme(panel.background = element_rect(fill = "white", colour = "white",
-                                        size = 0.5, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "white"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "white"),
-        axis.line = element_line(size = 0.5, linetype = "solid",
-                                 colour = "black"),
-        plot.title = element_text(size=9.0))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   scale_fill_grey(name = "Neighbour status")+
   ylim(0,1.5)+
   ylab(" ")
@@ -158,7 +143,7 @@ final.neighbour.biomass.plots
 ggsave(filename = "Neighbour biomass plots.png", 
        final.neighbour.biomass.plots,
        path = "figures/",
-       width = 11,
+       width = 16,
        height = 6,
        units = "in"
 )
