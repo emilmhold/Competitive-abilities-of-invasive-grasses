@@ -1,6 +1,6 @@
 ## Biomass and competition models, figures, and tables
 ## Authors: Cole Vandemark, Viktoria Wagner, and Emily Holden
-## Last edited by Emily: May 12, 2025
+## Last edited by Emily: May 26, 2025
 
 #install.packages("tidyverse")
 #install.packages("readxl")
@@ -63,18 +63,18 @@ controls <- read_excel("data/Vandemark Comp. Study - Control Data.xlsx", col_nam
 #linear mixed model
 #lme.ab.biomass <- lme(Above ~ Species, random = ~ 1|Pop.target/Treatment, data = controls) #Cole's code
 lme.ab.biomass <- lme(Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
-summary(lme.a)
-anova(lme.a)
+summary(lme.ab.biomass)
+anova(lme.ab.biomass)
 #post hoc tests
 #just between species
-emmeans(lme.a, list(pairwise ~ Species), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ Species), adjust = "tukey", data = dataset)
 #species region target
-emmeans(lme.a, list(pairwise ~ Species:region.target), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = dataset)
 #region target
-emmeans(lme.a, list(pairwise ~ region.target), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ region.target), adjust = "tukey", data = dataset)
 
 #Residual normality test
-resid <- residuals(lme.a)
+resid <- residuals(lme.ab.biomass)
 shapiro.test(resid)
 hist(resid)
 
@@ -104,9 +104,9 @@ ab.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Above,fill=
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Aboveground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab("Mean biomass (g)")
@@ -146,9 +146,9 @@ bg.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Below,fill=
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Belowground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab(" ")
@@ -188,11 +188,11 @@ tot.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Total,fill
                               expression(italic("B. inermis")), 
                               expression(italic("P. pratensis"))))+
   ggtitle("Total biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey(name = "Origin")+
   ylim(0,2)+
   ylab(" ")
@@ -209,7 +209,7 @@ final.biomass.plot <- cowplot::plot_grid(biomass.plots, legend, nrow = 1, rel_wi
 final.biomass.plot
 final.biomass.plot.with.label <- plot_grid(
   final.biomass.plot,
-  ggdraw() + draw_label("Species"),
+  ggdraw() + draw_label("Species", size = 20),
   ncol = 1,
   rel_heights = c(1, 0.05)
 )
@@ -219,8 +219,8 @@ final.biomass.plot.with.label
 ggsave(filename = "Cole's biomass plots.png", 
        final.biomass.plot.with.label,
        path = "figures/",
-       width = 12,
-       height = 6.5,
+       width = 16,
+       height = 8,
        units = "in"
 )
 
@@ -263,11 +263,11 @@ aboveground.tolerance.plot <- ggplot(data=T.above.summary,aes(x=Species,y=mean,f
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis"))))+
   ggtitle("Aboveground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey(name = "Origin")+
   ylim(-2.1,1)+
   ylab("Mean tolerance")
@@ -312,11 +312,11 @@ belowground.tolerance.plot <- ggplot(data=T.below.summary,aes(x=Species,y=mean,f
                                           expression(italic("B. inermis")), 
                                           expression(italic("P. pratensis"))))+
   ggtitle("Belowground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey(name = "Origin")+
   ylim(-2.1, 1) +
   ylab(" ")
@@ -361,11 +361,11 @@ total.tolerance.plot <- ggplot(data=T.total.summary,aes(x=Species,y=mean,fill=re
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis"))))+
   ggtitle("Total biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -413,11 +413,11 @@ suppression.above.plot <- ggplot(data=S.above.summary,aes(x=Species,y=mean,fill=
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
   ggtitle("Aboveground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab("Mean suppression")
@@ -461,11 +461,11 @@ suppression.below.plot <- ggplot(data=S.below.summary,aes(x=Species,y=mean,fill=
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
   ggtitle("Belowground biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -509,11 +509,11 @@ suppression.total.plot <- ggplot(data=S.total.summary,aes(x=Species,y=mean,fill=
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
   ggtitle("Total biomass")+
-  theme_classic(base_size = 12) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12))+
+  theme_classic(base_size = 20) +
+  theme(axis.text = element_text(angle = 90, size = 20),
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))+
   scale_fill_grey("Origin")+
   ylim(-2.1, 1)+
   ylab(" ")
@@ -531,7 +531,7 @@ competition.plots <- cowplot::plot_grid(aboveground.tolerance.plot + theme(legen
 final.competition.plot <- cowplot::plot_grid(competition.plots, legend, nrow = 1, rel_widths = c(1, 0.2))
 final.competition.plot.with.label <- plot_grid(
   final.competition.plot,
-  ggdraw() + draw_label("Species"),
+  ggdraw() + draw_label("Species", size = 20),
   ncol = 1,
   rel_heights = c(1, 0.05)
 )
@@ -541,8 +541,8 @@ final.competition.plot.with.label
 ggsave(filename = "Cole's competition plots.png", 
        final.competition.plot.with.label,
        path = "figures/",
-       width = 12.5,
-       height = 12,
+       width = 16,
+       height = 16,
        units = "in"
 )
 
