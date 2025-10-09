@@ -1,6 +1,6 @@
 ## Biomass and competition models, figures, and tables
 ## Authors: Cole Vandemark, Viktoria Wagner, and Emily Holden
-## Last edited by Emily: May 26, 2025
+## Last edited by Emily: October 9, 2025
 
 #install.packages("tidyverse")
 #install.packages("readxl")
@@ -57,6 +57,7 @@ controls <- read_excel("data/Vandemark Comp. Study - Control Data.xlsx", col_nam
     str_starts(Pop.target, "Po") ~ "P.angustifolia")) %>% #add species column
   mutate(Pop.target = str_replace(Pop.target, "CAN", "Can")) %>% ## ensure labels match for all populations
   mutate(region.target = if_else(str_detect(Pop.target, "Can"), "introduced", "native")) # add native/non-native status
+str(controls)
 
 #### Biomass models for alone plants ####
 #### Aboveground biomass ####
@@ -67,11 +68,11 @@ summary(lme.ab.biomass)
 anova(lme.ab.biomass)
 #post hoc tests
 #just between species
-emmeans(lme.ab.biomass, list(pairwise ~ Species), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ Species), adjust = "tukey", data = controls)
 #species region target
-emmeans(lme.ab.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = controls)
 #region target
-emmeans(lme.ab.biomass, list(pairwise ~ region.target), adjust = "tukey", data = dataset)
+emmeans(lme.ab.biomass, list(pairwise ~ region.target), adjust = "tukey", data = controls)
 
 #Residual normality test
 resid <- residuals(lme.ab.biomass)
@@ -120,11 +121,11 @@ summary(lme.bg.biomass)
 anova(lme.bg.biomass)
 #post hoc tests
 #just between species
-emmeans(lme.bg.biomass, list(pairwise ~ Species), adjust = "tukey", data = dataset)
+emmeans(lme.bg.biomass, list(pairwise ~ Species), adjust = "tukey", data = controls)
 #species region target
-emmeans(lme.bg.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = dataset)
+emmeans(lme.bg.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = controls)
 #region target
-emmeans(lme.bg.biomass, list(pairwise ~ region.target), adjust = "tukey", data = dataset)
+emmeans(lme.bg.biomass, list(pairwise ~ region.target), adjust = "tukey", data = controls)
 
 #Residual normality test
 resid <- residuals(lme.bg.biomass)
@@ -162,11 +163,11 @@ summary(lme.tot.biomass)
 anova(lme.tot.biomass)
 #post hoc tests
 #just between species
-emmeans(lme.tot.biomass, list(pairwise ~ Species), adjust = "tukey", data = dataset)
+emmeans(lme.tot.biomass, list(pairwise ~ Species), adjust = "tukey", data = controls)
 #species region target
-emmeans(lme.tot.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = dataset)
+emmeans(lme.tot.biomass, list(pairwise ~ Species:region.target), adjust = "tukey", data = controls)
 #region target
-emmeans(lme.tot.biomass, list(pairwise ~ region.target), adjust = "tukey", data = dataset)
+emmeans(lme.tot.biomass, list(pairwise ~ region.target), adjust = "tukey", data = controls)
 
 #Residual normality test
 resid <- residuals(lme.tot.biomass)
@@ -204,6 +205,7 @@ biomass.plots <- cowplot::plot_grid(ab.biomass.plot + theme(legend.position = "n
                                     bg.biomass.plot + theme(legend.position = "none"), 
                                     tot.biomass.plot + theme(legend.position = "none"),
                                     labels = "auto",
+                                    label_size = 20,
                                     nrow = 1, align = "hv")
 final.biomass.plot <- cowplot::plot_grid(biomass.plots, legend, nrow = 1, rel_widths = c(1, 0.2))
 final.biomass.plot
@@ -262,7 +264,7 @@ aboveground.tolerance.plot <- ggplot(data=T.above.summary,aes(x=Species,y=mean,f
   scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis"))))+
-  ggtitle("Aboveground biomass")+
+  ggtitle("Aboveground competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
         axis.title = element_text(size = 20),
@@ -311,7 +313,7 @@ belowground.tolerance.plot <- ggplot(data=T.below.summary,aes(x=Species,y=mean,f
   scale_x_discrete(name = " ", labels = c(expression(italic("A. cristatum")), 
                                           expression(italic("B. inermis")), 
                                           expression(italic("P. pratensis"))))+
-  ggtitle("Belowground biomass")+
+  ggtitle("Belowground competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
         axis.title = element_text(size = 20),
@@ -360,7 +362,7 @@ total.tolerance.plot <- ggplot(data=T.total.summary,aes(x=Species,y=mean,fill=re
   scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis"))))+
-  ggtitle("Total biomass")+
+  ggtitle("Total competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
         axis.title = element_text(size = 20),
@@ -412,7 +414,7 @@ suppression.above.plot <- ggplot(data=S.above.summary,aes(x=Species,y=mean,fill=
   scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
-  ggtitle("Aboveground biomass")+
+  ggtitle("Aboveground competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
         axis.title = element_text(size = 20),
@@ -460,7 +462,7 @@ suppression.below.plot <- ggplot(data=S.below.summary,aes(x=Species,y=mean,fill=
   scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
-  ggtitle("Belowground biomass")+
+  ggtitle("Belowground competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 20),
         axis.title = element_text(size = 20),
@@ -508,7 +510,7 @@ suppression.total.plot <- ggplot(data=S.total.summary,aes(x=Species,y=mean,fill=
   scale_x_discrete(name = " ",  labels = c(expression(italic("A. cristatum")), 
                                            expression(italic("B. inermis")), 
                                            expression(italic("P. pratensis")))) +
-  ggtitle("Total biomass")+
+  ggtitle("Total competition")+
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, size = 20),
         axis.title = element_text(size = 20),
@@ -541,7 +543,7 @@ final.competition.plot.with.label
 ggsave(filename = "Cole's competition plots.png", 
        final.competition.plot.with.label,
        path = "figures/",
-       width = 16,
+       width = 18,
        height = 16,
        units = "in"
 )
@@ -550,9 +552,9 @@ ggsave(filename = "Cole's competition plots.png",
 #### anova tables ####
 # Define the row labels you want
 model_list <- list(
-  lme.ab.biomass = lme.ab.biomass,
-  lme.bg.biomass = lme.bg.biomass,
-  lme.tot.biomass = lme.tot.biomass,
+  lme.ab.biomass = lme.ln.ab.biomass,
+  lme.bg.biomass = lme.ln.bg.biomass,
+  lme.tot.biomass = lme.ln.tot.biomass,
   lme.t.ab = lme.t.ab,
   lme.t.bg = lme.t.bg,
   lme.t.total = lme.t.total,
