@@ -70,7 +70,6 @@ str(neighbour.means)
 #### Biomass models for alone plants ####
 #### Aboveground biomass ####
 #linear mixed model
-#lme.ab.biomass <- lme(Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 lme.ab.biomass <- lme(log.Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.ab.biomass)
 anova(lme.ab.biomass)
@@ -128,7 +127,6 @@ ab.biomass.plot
 
 #### Belowground biomass ####
 #linear mixed model
-# lme.bg.biomass <- lme(Below ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 lme.bg.biomass <- lme(log.Below ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.bg.biomass)
 anova(lme.bg.biomass)
@@ -173,7 +171,6 @@ bg.biomass.plot
 
 #### Total biomass ####
 #linear mixed model
-# lme.tot.biomass <- lme(Total ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 lme.tot.biomass <- lme(log.Total ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.tot.biomass)
 anova(lme.tot.biomass)

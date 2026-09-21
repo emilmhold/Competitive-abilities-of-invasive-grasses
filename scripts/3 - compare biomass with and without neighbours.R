@@ -1,7 +1,7 @@
 ## Compare biomass for plants grown alone and with neighbours
 ## Author: Emily H
 ## Created: April 21, 2025
-## Last edited: September 13, 2026 (fixed Poa native/non-native population labeling bug)
+## Last edited: September 21, 2026 (fixed Poa native/non-native population labeling bug)
 
 #install.packages("tidyverse")
 
@@ -115,12 +115,16 @@ controls.to.merge <- controls %>%
 str(controls.to.merge)
 
 ### merge dataframes
-data.for.models <- rbind(target.data, controls.to.merge)
+data.for.models <- rbind(target.data, controls.to.merge) %>%
+  mutate(log.Above = log(Above),
+         log.Below = log(Below),
+         log.Total = log(Total)
+         )
 str(data.for.models)
 
 #### Aboveground biomass ####
 #linear mixed model
-lme.ab.neighbour.biomass <- lme(Above ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
+lme.ab.neighbour.biomass <- lme(log.Above ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
 summary(lme.ab.neighbour.biomass)
 anova(lme.ab.neighbour.biomass)
 
@@ -129,12 +133,16 @@ emmeans(lme.ab.neighbour.biomass, list(pairwise ~ Species:Neighbours), adjust = 
 
 #Residual normality test
 resid <- residuals(lme.ab.neighbour.biomass)
+plot(resid)
 shapiro.test(resid)
 hist(resid)
+qqnorm(resid)
+qqline(resid)
+
 
 #### Belowground biomass ####
 #linear mixed model
-lme.bg.neighbour.biomass <- lme(Below ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
+lme.bg.neighbour.biomass <- lme(log.Below ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
 summary(lme.bg.neighbour.biomass)
 anova(lme.bg.neighbour.biomass)
 
@@ -143,13 +151,15 @@ emmeans(lme.bg.neighbour.biomass, list(pairwise ~ Species:Neighbours), adjust = 
 
 #Residual normality test
 resid <- residuals(lme.bg.neighbour.biomass)
+plot(resid)
 shapiro.test(resid)
 hist(resid)
-plot(resid)
+qqnorm(resid)
+qqline(resid)
 
 #### Total biomass ####
 #linear mixed model
-lme.total.neighbour.biomass <- lme(Total ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
+lme.total.neighbour.biomass <- lme(log.Total ~ Neighbours*Species, random = ~ 1|Pop.target, data = data.for.models)
 summary(lme.total.neighbour.biomass)
 anova(lme.total.neighbour.biomass)
 
@@ -194,8 +204,8 @@ belowground.biomass.comparison <- ggplot(data=growth.comparison.df, aes(x=Specie
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   scale_fill_grey(name = "Neighbour status")+
-  annotate("text",x=1,y=1.2,label="ns",cex=5)+ 
-  annotate("text",x=2,y=1.2,label="*",cex=5)+
+  annotate("text",x=1,y=1.2,label="**",cex=5)+ 
+  annotate("text",x=2,y=1.2,label="***",cex=5)+
   annotate("text",x=3,y=1.2,label="***",cex=5)+
   ylim(0, 1.7)+
   ylab(" ")
@@ -213,7 +223,7 @@ total.biomass.comparison <- ggplot(data=growth.comparison.df, aes(x=Species,y=me
   theme_classic(base_size = 20) +
   theme(axis.text = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   scale_fill_grey(name = "Neighbour status")+
-  annotate("text",x=1,y=1.2,label="ns",cex=5)+ 
+  annotate("text",x=1,y=1.2,label="***",cex=5)+ 
   annotate("text",x=2,y=1.2,label="***",cex=5)+
   annotate("text",x=3,y=1.6,label="***",cex=5)+
   ylim(0, 1.7)+  
