@@ -1,6 +1,6 @@
 ## Biomass and competition models, figures, and tables
 ## Authors: Cole Vandemark, Viktoria Wagner, and Emily Holden
-## Last edited by Emily: October 9, 2025
+## Last edited by Emily: September 21, 2026
 
 #install.packages("tidyverse")
 #install.packages("readxl")
@@ -21,8 +21,6 @@ library(emmeans)
 library(magrittr)
 library(cowplot)
 library(readr)
-
-setwd("~/Documents/Side Projects/Viktoria and Cole - EICA mesocosm/Cole EICA mesocosm")
 
 ### import and clean data ####
 #competition data
@@ -56,14 +54,24 @@ controls <- read_excel("data/Vandemark Comp. Study - Control Data.xlsx", col_nam
     str_starts(Pop.target, "Ag") ~ "A.cristatum",
     str_starts(Pop.target, "Po") ~ "P.angustifolia")) %>% #add species column
   mutate(Pop.target = str_replace(Pop.target, "CAN", "Can")) %>% ## ensure labels match for all populations
-  mutate(region.target = if_else(str_detect(Pop.target, "Can"), "introduced", "native")) # add native/non-native status
+  mutate(region.target = if_else(str_detect(Pop.target, "Can"), "introduced", "native")) %>% # add native/non-native status
+  mutate(log.Above = log(Above),
+         log.Below = log(Below),
+         log.Total = log(Total)
+         ) #take the natural log of the biomasses to improve model fit
 str(controls)
+
+## neighbour biomasses for figures
+neighbour.means <- read_csv("output/neighbour_mean_biomasses.csv") %>%
+  select(-1) %>%
+  mutate(region.target = str_replace(region.target, "non-native", "introduced"))
+str(neighbour.means)
 
 #### Biomass models for alone plants ####
 #### Aboveground biomass ####
 #linear mixed model
-#lme.ab.biomass <- lme(Above ~ Species, random = ~ 1|Pop.target/Treatment, data = controls) #Cole's code
-lme.ab.biomass <- lme(Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+#lme.ab.biomass <- lme(Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+lme.ab.biomass <- lme(log.Above ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.ab.biomass)
 anova(lme.ab.biomass)
 #post hoc tests
@@ -78,6 +86,9 @@ emmeans(lme.ab.biomass, list(pairwise ~ region.target), adjust = "tukey", data =
 resid <- residuals(lme.ab.biomass)
 shapiro.test(resid)
 hist(resid)
+qqnorm(resid)
+qqline(resid)
+plot(lme.ab.biomass)
 
 #plot
 #biomass summary
@@ -88,10 +99,12 @@ biomass.summary <- controls %>%
             mean.Below = mean(Below),
             se.Below = sd(Below)/sqrt(length(Below)),
             mean.Total = mean(Total),
-            se.Total = sd(Total)/sqrt(length(Total)))
+            se.Total = sd(Total)/sqrt(length(Total))) %>%
+  mutate(neighbour.status = "alone")
+  # rbind(neighbour.means)
 
 # figure
-ab.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Above,fill=region.target)) +
+ab.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Above, fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean.Above-se.Above,ymax=mean.Above+se.Above),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=0.5,label="ns",cex=5)+ 
@@ -115,8 +128,8 @@ ab.biomass.plot
 
 #### Belowground biomass ####
 #linear mixed model
-#lme.ab.biomass <- lme(Above ~ Species, random = ~ 1|Pop.target/Treatment, data = controls) #Cole's code
-lme.bg.biomass <- lme(Below ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+# lme.bg.biomass <- lme(Below ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+lme.bg.biomass <- lme(log.Below ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.bg.biomass)
 anova(lme.bg.biomass)
 #post hoc tests
@@ -129,16 +142,19 @@ emmeans(lme.bg.biomass, list(pairwise ~ region.target), adjust = "tukey", data =
 
 #Residual normality test
 resid <- residuals(lme.bg.biomass)
-shapiro.test(resid) #significant
+shapiro.test(resid) 
 hist(resid)
+qqnorm(resid)
+qqline(resid)
+plot(lme.ab.biomass)
 
 # figure
 bg.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Below,fill=region.target)) +
   geom_bar(stat="identity",position = position_dodge()) + 
   geom_errorbar(aes(ymin=mean.Below-se.Below,ymax=mean.Below+se.Below),width=0.2,position = position_dodge(0.9))+
-  annotate("text",x=1,y=0.5,label="ns",cex=5)+ 
+  annotate("text",x=1,y=0.5,label="*",cex=5)+ 
   annotate("text",x=2,y=0.6,label="ns",cex=5)+
-  annotate("text",x=3,y=1.3,label="**",cex=5)+
+  annotate("text",x=3,y=1.5,label="ns",cex=5)+
   #annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
   #annotate("text",x=2.85,y=1.95,label="origin: p=0.046",cex=3)+
   #annotate("text",x=2.55,y=1.9,label="species:origin: p=0.001",cex=3)+
@@ -157,8 +173,8 @@ bg.biomass.plot
 
 #### Total biomass ####
 #linear mixed model
-#lme.ab.biomass <- lme(Above ~ Species, random = ~ 1|Pop.target/Treatment, data = controls) #Cole's code
-lme.tot.biomass <- lme(Total ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+# lme.tot.biomass <- lme(Total ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
+lme.tot.biomass <- lme(log.Total ~ Species*region.target, random = ~ 1|Pop.target, data = controls)
 summary(lme.tot.biomass)
 anova(lme.tot.biomass)
 #post hoc tests
@@ -171,8 +187,11 @@ emmeans(lme.tot.biomass, list(pairwise ~ region.target), adjust = "tukey", data 
 
 #Residual normality test
 resid <- residuals(lme.tot.biomass)
-shapiro.test(resid) #significant
+shapiro.test(resid) 
 hist(resid)
+qqnorm(resid)
+qqline(resid)
+plot(lme.tot.biomass)
 
 # figure
 tot.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Total,fill=region.target)) +
@@ -180,7 +199,7 @@ tot.biomass.plot <- ggplot(data=biomass.summary, aes(x=Species,y=mean.Total,fill
   geom_errorbar(aes(ymin=mean.Total-se.Total,ymax=mean.Total+se.Total),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=0.7,label="ns",cex=5)+ 
   annotate("text",x=2,y=1,label="ns",cex=5)+
-  annotate("text",x=3,y=1.7,label="*",cex=5)+
+  annotate("text",x=3,y=1.7,label="ns",cex=5)+
   #annotate("text",x=2.93,y=2,label="species: p<0.001",cex=3)+ 
   #annotate("text",x=2.85,y=1.95,label="origin: p=0.194",cex=3)+
   #annotate("text",x=2.55,y=1.9,label="species:origin: p=0.004",cex=3)+
@@ -306,7 +325,7 @@ belowground.tolerance.plot <- ggplot(data=T.below.summary,aes(x=Species,y=mean,f
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=-1,label="ns",cex=5)+ 
   annotate("text",x=2,y=-1,label="ns",cex=5)+
-  annotate("text",x=3,y=-2,label="**",cex=5)+
+  annotate("text",x=3,y=-2,label="ns",cex=5)+
   #annotate("text",x=2.93,y=1,label="species: p=0.060",cex=3)+ 
   #annotate("text",x=2.85,y=0.9,label="origin: p=0.045",cex=3)+
   #annotate("text",x=2.55,y=0.8,label="species:origin: p=0.004",cex=3)+
@@ -355,7 +374,7 @@ total.tolerance.plot <- ggplot(data=T.total.summary,aes(x=Species,y=mean,fill=re
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=-1,label="ns",cex=5)+ 
   annotate("text",x=2,y=-1,label="ns",cex=5)+
-  annotate("text",x=3,y=-1.75,label="*",cex=5)+
+  annotate("text",x=3,y=-1.5,label="ns",cex=5)+
   #annotate("text",x=2.93,y=1,label="species: p=0.215",cex=3)+ 
   #annotate("text",x=2.85,y=0.9,label="origin: p=0.148",cex=3)+
   #annotate("text",x=2.55,y=0.8,label="species:origin: p=0.014",cex=3)+
@@ -372,7 +391,6 @@ total.tolerance.plot <- ggplot(data=T.total.summary,aes(x=Species,y=mean,fill=re
   ylim(-2.1, 1)+
   ylab(" ")
 total.tolerance.plot
-
 
 ####Suppression ####
 #### Suppression above ####
@@ -455,7 +473,7 @@ suppression.below.plot <- ggplot(data=S.below.summary,aes(x=Species,y=mean,fill=
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=-1,label="ns",cex=5)+ 
   annotate("text",x=2,y=-1,label="ns",cex=5)+
-  annotate("text",x=3,y=-2,label="***",cex=5)+
+  annotate("text",x=3,y=-1.5,label="ns",cex=5)+
   #annotate("text",x=2.9,y=1,label="species: p=0.005",cex=3)+ 
   #annotate("text",x=2.85,y=0.9,label="origin: p=0.005",cex=3)+
   #annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
@@ -503,7 +521,7 @@ suppression.total.plot <- ggplot(data=S.total.summary,aes(x=Species,y=mean,fill=
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se),width=0.2,position = position_dodge(0.9))+
   annotate("text",x=1,y=-1,label="ns",cex=5)+ 
   annotate("text",x=2,y=-1,label="ns",cex=5)+
-  annotate("text",x=3,y=-1.7,label="**",cex=5)+
+  annotate("text",x=3,y=-1.5,label="ns",cex=5)+
   #annotate("text",x=2.93,y=1,label="species: p=0.031",cex=3)+ 
   #annotate("text",x=2.85,y=0.9,label="origin: p=0.027",cex=3)+
   #annotate("text",x=2.55,y=0.8,label="species:origin: p<0.001",cex=3)+
@@ -552,9 +570,9 @@ ggsave(filename = "Cole's competition plots.png",
 #### anova tables ####
 # Define the row labels you want
 model_list <- list(
-  lme.ab.biomass = lme.ln.ab.biomass,
-  lme.bg.biomass = lme.ln.bg.biomass,
-  lme.tot.biomass = lme.ln.tot.biomass,
+  lme.ab.biomass = lme.ab.biomass,
+  lme.bg.biomass = lme.bg.biomass,
+  lme.tot.biomass = lme.tot.biomass,
   lme.t.ab = lme.t.ab,
   lme.t.bg = lme.t.bg,
   lme.t.total = lme.t.total,

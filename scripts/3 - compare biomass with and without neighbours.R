@@ -1,7 +1,7 @@
 ## Compare biomass for plants grown alone and with neighbours
 ## Author: Emily H
 ## Created: April 21, 2025
-## Last edited: October 9, 2025
+## Last edited: September 13, 2026 (fixed Poa native/non-native population labeling bug)
 
 #install.packages("tidyverse")
 
@@ -11,8 +11,6 @@ library(lme4)
 library(lmerTest)
 library(nlme)
 library(emmeans)
-
-setwd("~/Documents/Side Projects/Viktoria and Cole - EICA mesocosm/Cole EICA mesocosm")
 
 #### import data ####
 data <- read_excel("data/Vandemark_Competition plants_Spreadsheet.xlsx", col_names = TRUE) %>%
@@ -25,9 +23,19 @@ data <- read_excel("data/Vandemark_Competition plants_Spreadsheet.xlsx", col_nam
          neighbour.Total = 'Neighbour total biomass (g)') %>%
   mutate(Treatment = str_replace(Treatment, "CAN", "Can")) %>% ## ensure labels match for all populations
   separate(Treatment, into = c("Pop1", "Pop2"), sep = "/") %>%
+  # Bug fix (2026-09-13): the "Treatment" column lists native population first,
+  # non-native population second (Pop1/Pop2) for Agropyron and Bromus, but the
+  # reverse (non-native first, native second) for Poa. Swap Pop1/Pop2 for Poa
+  # rows so Pop1 = native and Pop2 = non-native consistently across all genera
+  # before assigning Pop.target/Pop.neighbour below.
+  mutate(Genus = str_sub(Pop1, 1, 2)) %>%
+  mutate(Pop1.fixed = if_else(Genus == "Po", Pop2, Pop1),
+         Pop2.fixed = if_else(Genus == "Po", Pop1, Pop2)) %>%
+  mutate(Pop1 = Pop1.fixed, Pop2 = Pop2.fixed) %>%
+  dplyr::select(-Pop1.fixed, -Pop2.fixed) %>%
   mutate(Pop.target = if_else(Target.plant == "non-native", Pop2, Pop1), .before = target.Above) %>% #create column tracking the population of the target plant.
   mutate(Pop.neighbour = if_else(Target.plant == "native", Pop2, Pop1), .before = target.Above) %>% #create column tracking the population of the target plant.
-  dplyr::select(-Pop1, -Pop2)  # Remove intermediate columns when not needed
+  dplyr::select(-Pop1, -Pop2, -Genus)  # Remove intermediate columns when not needed
 sum(is.na(data)) #no NA values
 str(data)
 

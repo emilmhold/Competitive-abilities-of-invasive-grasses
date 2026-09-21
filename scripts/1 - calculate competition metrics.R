@@ -1,14 +1,12 @@
 ## Calculate competitive suppression and tolerance
 ## Author: Emily H
 ## Created: March 28, 2025
-## Last edited: April 21, 2025
+## Last edited: September 13, 2026
 
 #install.packages("tidyverse")
 
 library(tidyverse)
 library(readxl)
-
-setwd("~/Documents/Side Projects/Viktoria and Cole - EICA mesocosm/Cole EICA mesocosm")
 
 #### import data ####
 data <- read_excel("data/Vandemark_Competition plants_Spreadsheet.xlsx", col_names = TRUE) %>%
@@ -21,9 +19,19 @@ data <- read_excel("data/Vandemark_Competition plants_Spreadsheet.xlsx", col_nam
          neighbour.Total = 'Neighbour total biomass (g)') %>%
   mutate(Treatment = str_replace(Treatment, "CAN", "Can")) %>% ## ensure labels match for all populations
   separate(Treatment, into = c("Pop1", "Pop2"), sep = "/") %>%
+  # Bug fix (2026-09-13): the "Treatment" column lists native population first,
+  # non-native population second (Pop1/Pop2) for Agropyron and Bromus, but the
+  # reverse (non-native first, native second) for Poa. Swap Pop1/Pop2 for Poa
+  # rows so Pop1 = native and Pop2 = non-native consistently across all genera
+  # before assigning Pop.target/Pop.neighbour below.
+  mutate(Genus = str_sub(Pop1, 1, 2)) %>%
+  mutate(Pop1.fixed = if_else(Genus == "Po", Pop2, Pop1),
+         Pop2.fixed = if_else(Genus == "Po", Pop1, Pop2)) %>%
+  mutate(Pop1 = Pop1.fixed, Pop2 = Pop2.fixed) %>%
+  dplyr::select(-Pop1.fixed, -Pop2.fixed) %>%
   mutate(Pop.target = if_else(Target.plant == "non-native", Pop2, Pop1), .before = target.Above) %>% #create column tracking the population of the target plant.
   mutate(Pop.neighbour = if_else(Target.plant == "native", Pop2, Pop1), .before = target.Above) %>% #create column tracking the population of the target plant.
-  dplyr::select(-Pop1, -Pop2)  # Remove intermediate columns when not needed
+  dplyr::select(-Pop1, -Pop2, -Genus)  # Remove intermediate columns when not needed
 sum(is.na(data)) #no NA values
 str(data)
 
@@ -64,6 +72,25 @@ neighbour.means <- controls %>%
             neighbour.se.Total = sd(Total)/sqrt(length(Total))) %>%
   rename(Pop.neighbour = Pop.target)
 str(neighbour.means)
+
+#### export neighbour means to add to figure 1 ####
+competition.mean.biomasses <- data %>%
+  mutate(Species = case_when(
+    str_starts(Pop.target, "Br") ~ "B. inermis",
+    str_starts(Pop.target, "Ag") ~ "A. cristatum",
+    str_starts(Pop.target, "Po") ~ "P. pratensis subsp. angustifolia"), .before = Pop.target) %>% #add species column
+  group_by(Species, Target.plant) %>%
+  summarize(mean.Above = mean(target.Above),
+            se.Above = sd(target.Above)/sqrt(length(target.Above)),
+            mean.Below = mean(target.Below),
+            se.Below = sd(target.Below)/sqrt(length(target.Below)),
+            mean.Total = mean(target.Total),
+            se.Total = sd(target.Total)/sqrt(length(target.Total))) %>%
+  mutate(neighbour.status = "Grown with neighbour") %>%
+  rename(region.target = Target.plant)
+str(competition.mean.biomasses)
+
+write.csv(competition.mean.biomasses, "output/neighbour_mean_biomasses.csv")
 
 ## add means to the rest of the data
 new.data <- data %>%
